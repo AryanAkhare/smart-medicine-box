@@ -1,0 +1,42 @@
+# PlatformIO build files
+
+.pio/
+.piolibdeps/
+.piolibdeps.lock
+
+# Compiled firmware
+
+*.bin
+*.elf
+*.hex
+
+# VS Code settings
+
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+!.vscode/launch.json
+
+# OS files
+
+.DS_Store
+Thumbs.db
+
+# Python cache (sometimes created by PlatformIO)
+
+**pycache**/
+*.pyc
+
+# Logs
+
+*.log
+
+# Node-RED local files
+
+node_modules/
+flows_cred.json
+
+# Temporary files
+
+*.tmp
+*.temp
