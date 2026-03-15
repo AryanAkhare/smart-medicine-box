@@ -8,7 +8,7 @@ An ESP32-based medicine reminder/monitoring project with an OLED dashboard, MQTT
   - Shows time (RTC), temperature/humidity (DHT22), and device status
   - Displays **"TAKE MEDS!"** when an MQTT reminder arrives
 - **MQTT reminders + acknowledgements**
-  - Subscribes for reminders
+  - Subscribes for reminders (and also publishes scheduled reminders)
   - Publishes sensor telemetry and “medicine taken” acknowledgements
 - **Alarm outputs**
   - **LED blink** + **buzzer tone** while alarm is active
@@ -50,6 +50,8 @@ An ESP32-based medicine reminder/monitoring project with an OLED dashboard, MQTT
   - `medbox/reminder`
     - Payload: `TIME_TO_TAKE_MEDS` → triggers the alarm
 - **Publish**
+  - `medbox/reminder`
+    - Payload: `TIME_TO_TAKE_MEDS` (sent at scheduled times)
   - `medbox/status`
     - Payload: `MEDICINE_TAKEN` (sent when button is pressed during alarm)
   - `medbox/sensors`
@@ -61,11 +63,12 @@ An ESP32-based medicine reminder/monitoring project with an OLED dashboard, MQTT
 - On boot, the OLED briefly shows **“System Online”**
 - Device attempts WiFi for ~15 seconds; if it fails, it continues running **offline**
 - MQTT reconnect is attempted periodically when WiFi is connected
+- At 08:00, 14:00, and 20:00 the device publishes a reminder (`TIME_TO_TAKE_MEDS`) to `medbox/reminder` (flags reset at 00:01)
 - Every ~2 seconds the OLED updates:
   - Time from the RTC
   - Temperature/humidity from the DHT22
   - Status text (or “TAKE MEDS!” if alarm active)
-- When an MQTT reminder arrives:
+- When an MQTT reminder arrives (local or remote):
   - Alarm turns on (LED blinking + buzzer tone)
   - Pressing the button stops the alarm and publishes `MEDICINE_TAKEN`
 
