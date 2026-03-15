@@ -19,6 +19,12 @@ An ESP32-based medicine reminder/monitoring project with an OLED dashboard, MQTT
 
 ## Hardware (Wokwi diagram matches this)
 
+## Diagrams
+
+![Hardware Diagram](images/diagram.png)
+
+![Node-RED Flow](images/flow.png)
+
 ### Pin map (ESP32 DevKit)
 
 | Component | Signal | ESP32 Pin |
