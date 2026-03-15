@@ -32,7 +32,9 @@ bool alarmActive = false;
 unsigned long lastDisplayUpdate = 0;
 unsigned long lastMqttPublish = 0;
 unsigned long lastMqttReconnectAttempt = 0;
-
+bool morningSent = false;
+bool noonSent = false;
+bool nightSent = false;
 void setup_wifi() {
   Serial.print("Connecting to WiFi");
   WiFi.begin(ssid, password);
@@ -58,6 +60,33 @@ void mqttCallback(char* topic, byte* payload, unsigned int length) {
   if (message == "TIME_TO_TAKE_MEDS") {
     alarmActive = true;
     Serial.println("ALARM TRIGGERED!");
+  }
+}
+void checkMedicineTime(DateTime now) {
+
+  // MORNING 8:00
+  if (now.hour() == 8 && now.minute() == 0 && !morningSent) {
+    client.publish("medbox/reminder", "TIME_TO_TAKE_MEDS");
+    morningSent = true;
+  }
+
+  // NOON 14:00
+  if (now.hour() == 14 && now.minute() == 0 && !noonSent) {
+    client.publish("medbox/reminder", "TIME_TO_TAKE_MEDS");
+    noonSent = true;
+  }
+
+  // NIGHT 20:00
+  if (now.hour() == 20 && now.minute() == 0 && !nightSent) {
+    client.publish("medbox/reminder", "TIME_TO_TAKE_MEDS");
+    nightSent = true;
+  }
+
+  // Reset flags at midnight
+  if (now.hour() == 0 && now.minute() == 1) {
+    morningSent = false;
+    noonSent = false;
+    nightSent = false;
   }
 }
 
@@ -150,6 +179,8 @@ void loop() {
     float h = dht.readHumidity();
     DateTime now = rtc.now();
 
+    checkMedicineTime(now);
+    
     display.clearDisplay();
     display.setCursor(0, 0);
     display.setTextSize(1);
